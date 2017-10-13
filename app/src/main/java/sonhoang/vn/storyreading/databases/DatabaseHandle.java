@@ -39,6 +39,7 @@ public class DatabaseHandle {
 
         while (!cursor.isAfterLast()){
             //get data
+            int id = cursor.getInt(0);
             String image = cursor.getString(1);
             String title = cursor.getString(2);
             String description = cursor.getString(3);
@@ -46,7 +47,7 @@ public class DatabaseHandle {
             String author = cursor.getString(5);
             boolean bookmark = cursor.getInt(6) != 0;
 
-            StoryModel storyModel = new StoryModel(image, title, description, content, author, bookmark);
+            StoryModel storyModel = new StoryModel(id, image, title, description, content, author, bookmark);
             storyModels.add(storyModel);
 
             //move next

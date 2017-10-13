@@ -1,6 +1,7 @@
 package sonhoang.vn.storyreading.activities;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import sonhoang.vn.storyreading.R;
+import sonhoang.vn.storyreading.databases.AssetHelper;
 import sonhoang.vn.storyreading.databases.StoryModel;
 
 public class DescriptionActivity extends AppCompatActivity implements View.OnClickListener {
@@ -24,6 +26,7 @@ public class DescriptionActivity extends AppCompatActivity implements View.OnCli
     private TextView tvAuthor;
     private TextView tvDescription;
     private Button btStartReading;
+    private int storyID;
     private StoryModel storyModel;
 
     @Override
@@ -31,9 +34,6 @@ public class DescriptionActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_description);
 
-        setupUI();
-        addListeners();
-        loadData();
     }
 
     private void loadData() {
@@ -48,6 +48,12 @@ public class DescriptionActivity extends AppCompatActivity implements View.OnCli
         tvTitle.setText(storyModel.getTitle());
         tvAuthor.setText(storyModel.getAuthor());
         tvDescription.setText(storyModel.getDescription());
+        storyID = storyModel.getId();
+        if (!storyModel.isBookmark()){
+            ivBookmarkButton.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+        } else {
+            ivBookmarkButton.setImageResource(R.drawable.ic_bookmark_black_24dp);
+        }
     }
 
     private void addListeners() {
@@ -77,6 +83,7 @@ public class DescriptionActivity extends AppCompatActivity implements View.OnCli
 
             case R.id.iv_bookmark_button:{
                 Log.d(TAG, "onClick: bookmark");
+                updateBookmark();
                 break;
             }
 
@@ -85,5 +92,30 @@ public class DescriptionActivity extends AppCompatActivity implements View.OnCli
                 break;
             }
         }
+    }
+
+    private void updateBookmark() {
+        boolean storyBookmark = storyModel.isBookmark();
+        AssetHelper assetHelper = new AssetHelper(this);
+        SQLiteDatabase sqLiteDatabase = assetHelper.getWritableDatabase();
+        if (!storyBookmark) {
+            sqLiteDatabase.execSQL("update tbl_short_story set bookmark = 1 where id = " + storyID);
+            ivBookmarkButton.setImageResource(R.drawable.ic_bookmark_black_24dp);
+            Log.d(TAG, "updateBookmark: bookmarked");
+        } else {
+            sqLiteDatabase.execSQL("update tbl_short_story set bookmark = 0 where id = " + storyID);
+            ivBookmarkButton.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+            Log.d(TAG, "updateBookmark: unbookmarked");
+        }
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        setupUI();
+        addListeners();
+        loadData();
     }
 }

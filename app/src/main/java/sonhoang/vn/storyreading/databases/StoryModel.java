@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 
 public class StoryModel implements Serializable{
+    private int id;
     private String image;
     private String title;
     private String description;
@@ -14,7 +15,16 @@ public class StoryModel implements Serializable{
     private String author;
     private boolean bookmark;
 
-    public StoryModel(String image, String title, String description, String content, String author, boolean bookmark) {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public StoryModel(int id, String image, String title, String description, String content, String author, boolean bookmark) {
+        this.id = id;
         this.image = image;
         this.title = title;
         this.description = description;

@@ -42,11 +42,17 @@ public class StoryAdapter extends ArrayAdapter<StoryModel> {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         convertView = layoutInflater.inflate(resource, parent, false);
 
+        View vBookmark = convertView.findViewById(R.id.v_bookmark);
         TextView tvTitle = (TextView) convertView.findViewById(R.id.tv_title_story);
         TextView tvAuthor = (TextView) convertView.findViewById(R.id.tv_author_story);
         ImageView ivImageStory = (ImageView) convertView.findViewById(R.id.iv_image_story);
 
         //setData
+        if (!storyModels.get(position).isBookmark()){
+            vBookmark.setBackgroundResource(R.color.colorPrimary);
+        } else {
+            vBookmark.setBackgroundResource(R.color.colorAccent);
+        }
         tvTitle.setText(storyModels.get(position).getTitle());
         tvAuthor.setText(storyModels.get(position).getAuthor());
 
